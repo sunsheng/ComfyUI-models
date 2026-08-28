@@ -75,7 +75,24 @@ function isRedirect(status) {
 
 export default {
   async fetch(request, env) {
+    const debug = env.DEBUG === "true" || env.DEBUG === "1";
+    const log = (event, fields = {}) => {
+      if (debug) console.log(JSON.stringify({ event, ...fields }));
+    };
+
+    const incoming = new URL(request.url);
+    log("request", {
+      method: request.method,
+      path: incoming.pathname,
+      hasHFToken: Boolean(env.HF_TOKEN),
+      hfTokenLength: env.HF_TOKEN?.length || 0,
+      hasProxyKey: Boolean(env.PROXY_KEY),
+      hasAllowedRepos: Boolean(env.ALLOWED_REPOS),
+      envKeys: Object.keys(env).sort(),
+    });
+
     if (request.method !== "GET" && request.method !== "HEAD") {
+      log("rejected_method", { method: request.method });
       return new Response("Method Not Allowed", {
         status: 405,
         headers: { Allow: "GET, HEAD" },
@@ -83,17 +100,21 @@ export default {
     }
 
     if (!env.HF_TOKEN) {
+      log("missing_hf_token");
       return new Response("HF_TOKEN is not configured", { status: 500 });
     }
 
     if (env.PROXY_KEY) {
       const authorization = request.headers.get("authorization") || "";
-      if (authorization !== `Bearer ${env.PROXY_KEY}`) return unauthorized();
+      if (authorization !== `Bearer ${env.PROXY_KEY}`) {
+        log("rejected_proxy_key");
+        return unauthorized();
+      }
     }
 
-    const incoming = new URL(request.url);
     const parsed = parseDownloadPath(incoming.pathname, env);
     if (!parsed) {
+      log("rejected_path");
       return new Response(
         "Use /<owner>/<repo>/(blob|resolve)/<ref>/<path> for an allowlisted repository",
         { status: 404 },
@@ -107,6 +128,7 @@ export default {
         .join("/")}`,
       HF_ORIGIN,
     );
+    log("target", { repo: parsed.repo, ref: parsed.ref, file: parsed.file });
     for (const [key, value] of incoming.searchParams) target.searchParams.append(key, value);
 
     // Follow a short redirect chain ourselves so the HF token is only ever
@@ -124,13 +146,21 @@ export default {
           headers: requestHeaders,
           redirect: "manual",
         });
+        log("origin_response", {
+          hop,
+          status: response.status,
+          origin: currentURL.origin,
+          redirected: isRedirect(response.status),
+        });
       } catch {
+        log("origin_fetch_error", { hop, origin: currentURL.origin });
         return new Response("Unable to reach Hugging Face", { status: 502 });
       }
       if (!isRedirect(response.status)) break;
       const location = response.headers.get("location");
       if (!location) return new Response("Origin redirect without location", { status: 502 });
       currentURL = new URL(location, currentURL);
+      log("redirect", { hop, nextOrigin: currentURL.origin });
       if (hop === 3) return new Response("Too many origin redirects", { status: 502 });
     }
 
