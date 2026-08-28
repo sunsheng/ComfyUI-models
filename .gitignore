@@ -8,6 +8,10 @@
 !**/
 !**/*.md
 
+# Cloudflare gated-model proxy source.
+!cloudflare-hf-proxy/
+!cloudflare-hf-proxy/**
+
 # 下载临时文件、缓存和工具元数据永远不纳入版本控制。
 ._____temp/
 .cache/
