@@ -5,5 +5,9 @@ compatibility_date = "2026-08-28"
 [vars]
 DEBUG = "true"
 
+[observability]
+enabled = true
+head_sampling_rate = 1
+
 # Bind the custom domain in the Cloudflare dashboard or with `wrangler domains`.
 # routes = [{ pattern = "hf-mirrors.i-yongqi.xyz/*", custom_domain = true }]
