@@ -1,5 +1,4 @@
 const HF_ORIGIN = "https://huggingface.co";
-const DEFAULT_REPO = "Lightricks/LTX-2.5";
 const FORWARDED_REQUEST_HEADERS = [
   "accept",
   "if-match",
@@ -9,15 +8,6 @@ const FORWARDED_REQUEST_HEADERS = [
   "range",
   "user-agent",
 ];
-
-function configuredRepos(env) {
-  return new Set(
-    (env.ALLOWED_REPOS || DEFAULT_REPO)
-      .split(",")
-      .map((repo) => repo.trim())
-      .filter(Boolean),
-  );
-}
 
 function unauthorized() {
   return new Response("Unauthorized", {
@@ -43,7 +33,6 @@ function parseDownloadPath(pathname, env) {
     return null;
   }
 
-  if (!configuredRepos(env).has(repo)) return null;
   if (repo.includes("..") || ref.includes("..") || file.split("/").some((part) => part === ".." || part === ".")) {
     return null;
   }
@@ -87,7 +76,6 @@ export default {
       hasHFToken: Boolean(env.HF_TOKEN),
       hfTokenLength: env.HF_TOKEN?.length || 0,
       hasProxyKey: Boolean(env.PROXY_KEY),
-      hasAllowedRepos: Boolean(env.ALLOWED_REPOS),
       envKeys: Object.keys(env).sort(),
     });
 
@@ -116,7 +104,7 @@ export default {
     if (!parsed) {
       log("rejected_path");
       return new Response(
-        "Use /<owner>/<repo>/(blob|resolve)/<ref>/<path> for an allowlisted repository",
+        "Use /<owner>/<repo>/(blob|resolve)/<ref>/<path> for a Hugging Face file",
         { status: 404 },
       );
     }

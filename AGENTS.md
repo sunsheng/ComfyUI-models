@@ -21,7 +21,7 @@ ModelScope 是默认工具，当前命令为 `modelscope`（CLI 1.36.2）。用�
 
 默认下载时，执行原方式后必须检查退出状态、HTTP 状态、文件大小和必要校验；原方式超时、无权限、连接失败或校验失败时，自动改用 CF 代理：`https://hf-mirrors.i-yongqi.xyz/<owner>/<repo>/resolve/<ref>/<file>`。原方式成功时不再重复使用代理。用户明确指定“使用 CF 代理”“强制使用 CF”等要求时，跳过原方式，直接使用该代理，不受之前命令或历史状态影响。
 
-CF 代理支持 `GET`、`HEAD`、`Range` 和断点续传；默认只允许 `Lightricks/LTX-2.5`。代理不需要客户端配置 Hugging Face Token；如部署端启用了 `PROXY_KEY`，下载请求必须附带对应的 Bearer 头。不得把 HF Token 写入命令、URL、日志或仓库。
+CF 代理支持 `GET`、`HEAD`、`Range` 和断点续传，可代理任意 Hugging Face 仓库。代理不需要客户端配置 Hugging Face Token；如部署端启用了 `PROXY_KEY`，下载请求必须附带对应的 Bearer 头。开放任意仓库后必须配置 `PROXY_KEY` 或 Cloudflare Access，避免公开消耗 HF 权限和 Cloudflare 流量。不得把 HF Token 写入命令、URL、日志或仓库。
 
 ## 只给模型名称或 URL 时
 
