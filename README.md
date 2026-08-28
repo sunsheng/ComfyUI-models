@@ -2,6 +2,25 @@
 
 本目录是 ComfyUI 的模型根目录。模型二进制文件保留在本地，但由 `.gitignore` 排除；Git 只同步本文件、`AGENTS.md` 和 `.gitignore`。换机时按本清单中的相对路径、仓库和文件名重新下载。
 
+## 下载说明
+
+用户提供模型名称或 Hugging Face 链接即可。默认先按 ModelScope/原下载方式执行并检查结果；仅在超时、无权限、连接失败或文件校验失败时，自动切换 CF 代理。明确写出“使用 CF 代理”或“强制使用 CF”时，直接使用代理，不受之前命令影响。
+
+CF 代理地址格式：
+
+```text
+https://hf-mirrors.i-yongqi.xyz/<owner>/<repo>/resolve/<ref>/<file>
+```
+
+例如：
+
+```sh
+curl -L -C - -o gemma4-12b-with-proj-ltx-2.5-comfy-int8-convrot.safetensors \
+  "https://hf-mirrors.i-yongqi.xyz/Lightricks/LTX-2.5/resolve/main/text_encoders/gemma4-12b-with-proj-ltx-2.5-comfy-int8-convrot.safetensors"
+```
+
+代理 Worker 项目和部署配置见 [`cloudflare-hf-proxy/`](cloudflare-hf-proxy/)。
+
 ## 当前目录树
 
 ```text
