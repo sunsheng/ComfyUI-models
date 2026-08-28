@@ -1,0 +1,6 @@
+# Runtime and skill-validation dependencies for the project environment.
+# Keep package installation independent of the host's global pip configuration.
+--index-url https://pypi.tuna.tsinghua.edu.cn/simple
+
+modelscope==1.36.2
+PyYAML==6.0.2

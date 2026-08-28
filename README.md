@@ -1,25 +1,18 @@
 # ComfyUI 模型清单
 
-本目录是 ComfyUI 的模型根目录。模型二进制文件保留在本地，但由 `.gitignore` 排除；Git 只同步本文件、`AGENTS.md` 和 `.gitignore`。换机时按本清单中的相对路径、仓库和文件名重新下载。
+本目录是 ComfyUI 的模型根目录。模型二进制文件保留在本地并由 `.gitignore` 排除；Git 同步本文件、`AGENTS.md`、`.gitignore` 和项目内 `.codex/skills/model-download/`。下载、续传、状态检查、校验和清理流程统一见 `model-download` skill。
 
-## 下载说明
+## 复现环境
 
-用户提供模型名称或 Hugging Face 链接即可。默认先按 ModelScope/原下载方式执行并检查结果；仅在超时、无权限、连接失败或文件校验失败时，自动切换 CF 代理。明确写出“使用 CF 代理”或“强制使用 CF”时，直接使用代理，不受之前命令影响。
-
-CF 代理地址格式：
-
-```text
-https://hf-mirrors.i-yongqi.xyz/<owner>/<repo>/resolve/<ref>/<file>
-```
-
-例如：
+在项目根目录执行以下命令创建并初始化项目专用虚拟环境。`.venv/` 不进入 Git，依赖版本由 `requirements.txt` 固定。
 
 ```sh
-curl -L -C - -o gemma4-12b-with-proj-ltx-2.5-comfy-int8-convrot.safetensors \
-  "https://hf-mirrors.i-yongqi.xyz/Lightricks/LTX-2.5/resolve/main/text_encoders/gemma4-12b-with-proj-ltx-2.5-comfy-int8-convrot.safetensors"
+python3 -m venv .venv
+.venv/bin/python -m pip install --upgrade pip
+.venv/bin/python -m pip install -r requirements.txt
 ```
 
-代理 Worker 项目和部署配置见 [`cloudflare-hf-proxy/`](cloudflare-hf-proxy/)。
+初始化后，下载流程使用 `.venv/bin/modelscope`，状态检查使用 `.venv/bin/python`。CF 传输按 skill 规定依次使用已安装的 `aria2c`、`curl` 或 `wget`；这些是传输工具，不属于 Python 依赖。
 
 ## 当前目录树
 
@@ -28,6 +21,8 @@ curl -L -C - -o gemma4-12b-with-proj-ltx-2.5-comfy-int8-convrot.safetensors \
 ├── AGENTS.md
 ├── README.md
 ├── .gitignore
+├── .codex/
+│   └── skills/model-download/
 ├── diffusion_models/
 │   ├── minimax_h3_fl2va_int8_convrot.safetensors
 │   ├── minimax_h3_fl2va_pruned_int8_convrot.safetensors
@@ -82,4 +77,4 @@ curl -L -C - -o gemma4-12b-with-proj-ltx-2.5-comfy-int8-convrot.safetensors \
 
 ## 维护规则
 
-新增或删除模型后，必须同时更新上面的目录树和模型索引，记录相对路径、字节数、来源、精度/架构和用途。临时目录、缓存、日志、下载器元数据和错误分片不属于模型清单。下载命令、断点续传、已有文件跳过和临时文件规则统一见 `AGENTS.md`。
+新增或删除模型后，必须同步更新上面的目录树和模型索引，记录相对路径、字节数、来源、精度/架构和用途。临时目录、缓存、日志、下载器元数据和错误分片不属于模型清单。

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Model Download"
+  short_description: "Download and inspect ComfyUI models safely"
+  default_prompt: "Use $model-download to download, resume, verify, or inspect ComfyUI model tasks."

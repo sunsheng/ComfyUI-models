@@ -1,12 +1,19 @@
 # 默认不把模型、缓存、脚本或其他二进制文件提交到 Git。
 *
 
-# 仅保留本目录的 Markdown 文档，便于在云端同步模型清单和操作规范。
+# 默认仅保留本目录的 Markdown 文档；项目 skill 和依赖清单另行保留以支持迁移复现。
 !.gitignore
 !README.md
 !AGENTS.md
+!requirements.txt
 !**/
 !**/*.md
+
+# Project-scoped Codex skills are versioned with the repository.
+!.codex/
+!.codex/skills/
+!.codex/skills/model-download/
+!.codex/skills/model-download/**
 
 # Cloudflare gated-model proxy source.
 !cloudflare-hf-proxy/
@@ -21,3 +28,6 @@
 .mv
 **/.msc
 **/.mv
+.venv/
+**/.venv/
+**/__pycache__/

@@ -6,6 +6,7 @@ from __future__ import annotations
 import os
 import json
 import hashlib
+import argparse
 import re
 import shutil
 import time
@@ -13,7 +14,7 @@ import unicodedata
 from pathlib import Path
 
 
-ROOT = Path(__file__).resolve().parent
+ROOT = Path.cwd()
 TEMP = ROOT / "._____temp"
 TARGET_DIRS = {
     "diffusion_models",
@@ -254,8 +255,15 @@ def collect_rows() -> list[list[str]]:
         hash_status = "-"
         if not is_alive and exit_code == "0":
             expected_hash = metadata_hash(metadata) if metadata.is_file() else None
-            actual_hash = local_sha256(path, stage_dir / f"{task_name}.sha256") if expected_hash and path else None
-            hash_status = "是" if expected_hash and actual_hash == expected_hash else "否"
+            # A digest is meaningful only after the downloaded byte count
+            # matches the authoritative metadata size. Avoid hashing partial
+            # files from processes that exited unsuccessfully or early.
+            complete = bool(path and size and total and size == total)
+            if expected_hash and not complete:
+                hash_status = "待完成"
+            elif expected_hash and complete:
+                actual_hash = local_sha256(path, stage_dir / f"{task_name}.sha256")
+                hash_status = "是" if actual_hash == expected_hash else "否"
         rows.append([
             status,
             str(pid),
@@ -271,7 +279,11 @@ def collect_rows() -> list[list[str]]:
 
 def print_table(rows: list[list[str]]) -> None:
     headers = ["STATUS", "PID", "SIZE/TOTAL", "PROGRESS", "DURATION", "EXIT", "HASH", "FILE"]
-    widths = [max(display_width(headers[i]), *(display_width(row[i]) for row in rows)) for i in range(len(headers))]
+    widths = []
+    for i, header in enumerate(headers):
+        values = [display_width(header)]
+        values.extend(display_width(row[i]) for row in rows)
+        widths.append(max(values))
     file_index = len(headers) - 1
     terminal_width = shutil.get_terminal_size((120, 24)).columns
     table_width = sum(width + 2 for width in widths) + len(widths) + 1
@@ -292,4 +304,18 @@ def print_table(rows: list[list[str]]) -> None:
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--root",
+        type=Path,
+        default=Path.cwd(),
+        help="ComfyUI model root (default: current directory)",
+    )
+    args = parser.parse_args()
+    ROOT = args.root.resolve()
+    TEMP = ROOT / "._____temp"
+    # Hashing newly completed multi-gigabyte files can take a while. Emit an
+    # immediate, unbuffered progress marker so callers can distinguish work
+    # in progress from an empty result.
+    print("Scanning download tasks (refreshing SHA256 caches as needed)...", flush=True)
     print_table(collect_rows())
