@@ -39,6 +39,8 @@ curl -L -C - -o gemma4-12b-with-proj-ltx-2.5-comfy-int8-convrot.safetensors \
 ├── loras/
 │   ├── minimax_h3_fl2v_turbo_8step_v1.0_comfyui_bf16.safetensors
 │   └── minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors
+├── latent_upscale_models/
+│   └── ltx-2.5-latent-spatial-upscaler-x2-bf16-1.0.safetensors
 ├── text_encoders/
 │   ├── qwen3vl_32b_minimax_h3_int8_convrot.safetensors
 │   ├── qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors
@@ -47,6 +49,8 @@ curl -L -C - -o gemma4-12b-with-proj-ltx-2.5-comfy-int8-convrot.safetensors \
 │   └── RealESRGAN_x4plus.safetensors
 └── vae/
     ├── ae.safetensors
+    ├── ltx-2.5-audio-vae-bf16.safetensors
+    ├── ltx-2.5-video-vae-bf16.safetensors
     ├── minimax_h3_audio_vae_fp32.safetensors
     └── minimax_h3_video_vae_fp16.safetensors
 ```
@@ -65,11 +69,14 @@ curl -L -C - -o gemma4-12b-with-proj-ltx-2.5-comfy-int8-convrot.safetensors \
 | `embeddings/minimaxh3_art_is_explosion.safetensors` | 512120 | `Comfy-Org/MiniMax-H3` | MiniMax H3 embedding |
 | `loras/minimax_h3_fl2v_turbo_8step_v1.0_comfyui_bf16.safetensors` | 1956193000 | `Comfy-Org/MiniMax-H3` | FL2V LoRA |
 | `loras/minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors` | 1956193000 | `Comfy-Org/MiniMax-H3` | Ref2V LoRA |
+| `latent_upscale_models/ltx-2.5-latent-spatial-upscaler-x2-bf16-1.0.safetensors` | 995778752 | `Lightricks/LTX-2.5` | LTX 2.5 BF16 latent spatial upscaler x2 |
 | `text_encoders/qwen3vl_32b_minimax_h3_int8_convrot.safetensors` | 27141342152 | `Comfy-Org/MiniMax-H3` | Qwen3-VL INT8 ConvRot |
 | `text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors` | 15687142551 | `Comfy-Org/MiniMax-H3` | Qwen3-VL NVFP4 AWQ |
 | `text_encoders/qwen_3_4b.safetensors` | 8044982048 | `Comfy-Org/z_image_turbo` | Z Image Turbo Qwen 3 4B |
 | `upscale_models/RealESRGAN_x4plus.safetensors` | 66857836 | `Comfy-Org/Real-ESRGAN_repackaged` | RealESRGAN x4 |
 | `vae/ae.safetensors` | 335304388 | `Comfy-Org/z_image_turbo` | Z Image Turbo VAE |
+| `vae/ltx-2.5-audio-vae-bf16.safetensors` | 364866540 | `Lightricks/LTX-2.5` | LTX 2.5 BF16 audio VAE |
+| `vae/ltx-2.5-video-vae-bf16.safetensors` | 1472223346 | `Lightricks/LTX-2.5` | LTX 2.5 BF16 video VAE |
 | `vae/minimax_h3_audio_vae_fp32.safetensors` | 605254808 | `Comfy-Org/MiniMax-H3` | MiniMax H3 音频 VAE |
 | `vae/minimax_h3_video_vae_fp16.safetensors` | 5207808496 | `Comfy-Org/MiniMax-H3` | MiniMax H3 视频 VAE |
 
