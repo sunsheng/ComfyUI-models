@@ -87,17 +87,20 @@ export default {
       });
     }
 
+    if (!env.PROXY_KEY) {
+      log("missing_proxy_key");
+      return new Response("PROXY_KEY is not configured", { status: 503 });
+    }
+
+    const authorization = request.headers.get("authorization") || "";
+    if (authorization !== `Bearer ${env.PROXY_KEY}`) {
+      log("rejected_proxy_key");
+      return unauthorized();
+    }
+
     if (!env.HF_TOKEN) {
       log("missing_hf_token");
       return new Response("HF_TOKEN is not configured", { status: 500 });
-    }
-
-    if (env.PROXY_KEY) {
-      const authorization = request.headers.get("authorization") || "";
-      if (authorization !== `Bearer ${env.PROXY_KEY}`) {
-        log("rejected_proxy_key");
-        return unauthorized();
-      }
     }
 
     const parsed = parseDownloadPath(incoming.pathname, env);

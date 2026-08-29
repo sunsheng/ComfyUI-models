@@ -17,6 +17,9 @@ Check the formal target path first. Skip only when the existing file matches the
 
 1. Use `.venv/bin/modelscope download` from the model root, with the same repository, revision, and file and `--local_dir .` (ModelScope CLI 1.36.2). Save equivalent remote metadata when available.
 2. Only after ModelScope is missing, unavailable, unauthorized, timed out, or failed verification, use the CF URL `https://hf-mirrors.i-yongqi.xyz/<owner>/<repo>/resolve/<revision>/<file>`.
+   Load `PROXY_KEY` from the model-root `.env` before making any CF request and fail
+   if it is missing. Send `Authorization: Bearer $PROXY_KEY` on both the metadata
+   request and the download request; never print the key in task logs or URLs.
 3. If both fail, report failure immediately. Do not probe another mirror or retry indefinitely.
 
 Before any transfer, obtain remote metadata. For CF, in the task stage directory issue a read-only request with `Accept: application/vnd.xet-fileinfo+json, /` and `Range: bytes=0-0`, saving the raw JSON as `<task>.metadata.json`. `size` and `hash` (or an equivalent SHA256 field) are authoritative; a failed metadata request is a reported failure, not permission to invent values.

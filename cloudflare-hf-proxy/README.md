@@ -13,9 +13,24 @@ wrangler secret put PROXY_KEY
 wrangler deploy
 ```
 
-Attach the custom domain `hf-mirrors.i-yongqi.xyz` to the Worker in Cloudflare. `PROXY_KEY` is strongly recommended; keep it separate from `HF_TOKEN` and share it only with trusted clients.
+`PROXY_KEY` is required. The Worker rejects every request when it is missing,
+and every request must include `Authorization: Bearer <PROXY_KEY>`.
 
-Any Hugging Face repository path is accepted. Protect the Worker with `PROXY_KEY` or Cloudflare Access before using it publicly.
+Attach the custom domain `hf-mirrors.i-yongqi.xyz` to the Worker in Cloudflare. `PROXY_KEY` is required; keep it separate from `HF_TOKEN` and share it only with trusted clients.
+
+Any Hugging Face repository path is accepted. The Worker is protected by `PROXY_KEY`; automated downloads should not be placed behind interactive Cloudflare Access.
+
+## GitHub Actions deployment
+
+Pushes to `main` that change this directory deploy the Worker through
+`.github/workflows/deploy-proxy.yml`. Add these repository secrets in GitHub:
+
+- `CLOUDFLARE_API_TOKEN` with permission to deploy Workers
+- `CLOUDFLARE_ACCOUNT_ID`
+
+After the first deployment, open the Worker in the Cloudflare dashboard and add
+`PROXY_KEY` and `HF_TOKEN` under **Settings > Variables and Secrets** as Secret
+values. `PROXY_KEY` must match the value in the model-root `.env`.
 
 ## Download URL
 
