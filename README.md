@@ -37,6 +37,7 @@ python3 -m venv .venv
 ├── loras/
 │   ├── lightx2v_I2V_14B_480p_cfg_step_distill_rank64_bf16.safetensors
 │   ├── minimax_h3_fl2v_turbo_8step_v1.0_comfyui_bf16.safetensors
+│   ├── minimax_h3_ref2v_turbo_8step_v1.0_768p_comfyui_bf16.safetensors
 │   └── minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors
 ├── latent_upscale_models/
 │   └── ltx-2.5-latent-spatial-upscaler-x2-bf16-1.0.safetensors
@@ -73,6 +74,7 @@ python3 -m venv .venv
 | `loras/lightx2v_I2V_14B_480p_cfg_step_distill_rank64_bf16.safetensors` | 738005744 | `Comfy-Org/Wan-Animate-2` | Wan Animate 2 LightX2V 14B 480p CFG-step distilled Rank64 BF16 LoRA |
 | `loras/minimax_h3_fl2v_turbo_8step_v1.0_comfyui_bf16.safetensors` | 1956193000 | `Comfy-Org/MiniMax-H3` | FL2V LoRA |
 | `loras/minimax_h3_ref2v_turbo_4step_v0.1_comfyui_bf16.safetensors` | 1956193000 | `Comfy-Org/MiniMax-H3` | Ref2V LoRA |
+| `loras/minimax_h3_ref2v_turbo_8step_v1.0_768p_comfyui_bf16.safetensors` | 1956193000 | `lightx2v/Minimax-h3-Turbo` | Ref2V 8-step 768p BF16 LoRA |
 | `latent_upscale_models/ltx-2.5-latent-spatial-upscaler-x2-bf16-1.0.safetensors` | 995778752 | `Lightricks/LTX-2.5` | LTX 2.5 BF16 latent spatial upscaler x2 |
 | `text_encoders/qwen3vl_32b_minimax_h3_int8_convrot.safetensors` | 27141342152 | `Comfy-Org/MiniMax-H3` | Qwen3-VL INT8 ConvRot |
 | `text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors` | 15687142551 | `Comfy-Org/MiniMax-H3` | Qwen3-VL NVFP4 AWQ |
