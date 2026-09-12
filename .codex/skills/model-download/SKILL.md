@@ -9,14 +9,14 @@ Use this skill when the user asks to download a model, continue or stop a task, 
 
 ## Resolve The Request
 
-Parse a model name or Hugging Face `blob` URL into owner, repository, revision, file path, architecture, precision, and one of the formal target directories. A Hugging Face URL is locator data only: never fetch it, browse it, or use `hf download`. If the requested variant, source, architecture, precision, or license is genuinely ambiguous, ask before downloading. Default to the complete model.
+Parse a model name or Hugging Face `blob` URL into owner, repository, source-specific revision, file path, architecture, precision, and one of the formal target directories. Keep `hf_revision` (the URL ref, commonly `main`, used only by CF) separate from `ms_revision` (the ModelScope repository branch, normally `master`, used only by ModelScope). A Hugging Face URL is locator data only: never fetch it, browse it, or use `hf download`. If the requested variant, source, architecture, precision, or license is genuinely ambiguous, ask before downloading. Default to the complete model.
 
 Check the formal target path first. Skip only when the existing file matches the requested variant, authoritative size, and SHA256. Check the matching `._____temp/<target-subdirectory>/` task and PID before starting anything; one file may have only one downloader. At most two independent large-file tasks may run concurrently.
 
 ## Source Order
 
-1. Use `.venv/bin/modelscope download` from the model root, with the same repository, revision, and file and `--local_dir .` (ModelScope CLI 1.36.2). Save equivalent remote metadata when available.
-2. Only after ModelScope is missing, unavailable, unauthorized, timed out, or failed verification, use the CF URL `https://hf-mirrors.i-yongqi.xyz/<owner>/<repo>/resolve/<revision>/<file>`.
+1. Use `.venv/bin/modelscope download` from the model root, with the ModelScope repository, an explicit confirmed branch revision (normally `--revision master`), and file plus `--local_dir .` (ModelScope CLI 1.36.2). Do not pass the Hugging Face URL ref such as `main` unless that exact ModelScope branch has been verified. Save equivalent remote metadata when available.
+2. Only after ModelScope is missing, unavailable, unauthorized, timed out, or failed verification, use the CF URL `https://hf-mirrors.i-yongqi.xyz/<owner>/<repo>/resolve/<hf_revision>/<file>`; preserve the Hugging Face URL ref for this fallback.
    Load `PROXY_KEY` from the model-root `.env` before making any CF request and fail
    if it is missing. Send `Authorization: Bearer $PROXY_KEY` on both the metadata
    request and the download request; never print the key in task logs or URLs.
